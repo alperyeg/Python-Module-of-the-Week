@@ -1,3 +1,5 @@
+import functools
+import time
 """
 Exercise — a decorator which times function execution
 
@@ -22,4 +24,21 @@ looong took 5.0323423 s
 1441180400.3567457
 """
 
-...
+def printtime(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time() - start
+        print("{} took {}".format(func.__name__, end))
+        return result
+    return wrapper
+
+@printtime
+def loooong():
+    s = 0
+    for i in range(1000000):
+        s += i**2
+    return s
+
+print(loooong())

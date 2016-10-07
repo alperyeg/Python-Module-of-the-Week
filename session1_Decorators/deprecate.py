@@ -15,3 +15,15 @@ f is deprecated, do not use
 
 The trick is how to store the state!
 """
+
+def deprecate(f, a):
+    def wrapper(*args, **kwargs):
+        print(*args)
+        result = f(*args, **kwargs)
+        return result
+
+    return wrapper
+
+
+@deprecate('do not use')
+def f(): pass
