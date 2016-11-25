@@ -1,5 +1,3 @@
-import functools
-import time
 """
 Exercise — a decorator which times function execution
 
@@ -42,3 +40,16 @@ def loooong():
     return s
 
 print(loooong())
+=======
+import time
+import functools
+
+def printtime(func):
+    def wrapper(*args, **kwargs):
+        t = time.time()
+        ans = func(*args, **kwargs)
+        t2 = time.time()
+        print(func.__name__, 'took', t2 - t, 's')
+        return ans
+    return functools.update_wrapper(wrapper, func)
+>>>>>>> master

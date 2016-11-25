@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Exercise — keeping state in decorators
 
@@ -16,14 +17,40 @@ f is deprecated, do not use
 The trick is how to store the state!
 """
 
-def deprecate(f, a):
-    def wrapper(*args, **kwargs):
-        print(*args)
-        result = f(*args, **kwargs)
-        return result
+import functools
 
-    return wrapper
+def deprecate(msg):
+    def decorator(func):
+        func._warning = True
+        def wrapper(*args, **kwargs):
+            if func._warning:
+                print(func.__name__, 'is deprecated,', msg)
+                func._warning = False
+            return func(*args, **kwargs)
+        return functools.update_wrapper(wrapper, func)
+    return decorator
 
+if 0:
+    def deprecate(msg):
+        def decorator(func):
+            warning = [True]
+            def wrapper(*args, **kwargs):
+                if warning[0]:
+                    print(func.__name__, 'is deprecated,', msg)
+                    warning[0] = False
+                return func(*args, **kwargs)
+            return functools.update_wrapper(wrapper, func)
+        return decorator
 
-@deprecate('do not use')
-def f(): pass
+if 0:
+    def deprecate_using_nonlocal(msg):
+        def decorator(func):
+            warning = True
+            def wrapper(*args, **kwargs):
+                nonlocal warning
+                if warning:
+                    print(func.__name__, 'is deprecated,', msg)
+                    warning = False
+                return func(*args, **kwargs)
+            return functools.update_wrapper(wrapper, func)
+        return decorator
